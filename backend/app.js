@@ -36,6 +36,10 @@ app.use('/api/v1/users', userRoutes);
 // Make uploads folder static
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+app.get('/', (req, res) => {
+    res.send('Oil Business API is running...');
+});
+
 app.get('/api/v1/health', (req, res) => {
     res.status(200).json({ success: true, message: 'Server is healthy' });
 });
