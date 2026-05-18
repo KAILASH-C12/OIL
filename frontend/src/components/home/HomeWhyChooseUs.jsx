@@ -1,51 +1,98 @@
-import React from 'react';
-import { ShieldCheck, TrendingDown, Clock, ThumbsUp, Package, BadgePercent, Shield, Anchor } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import { Award, Leaf, FlaskConical, Headphones, ShieldCheck, Zap } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const FEATURES = [
-  { id: 1, title: 'Premium Quality Oils', desc: '100% pure and unadulterated edible oils tested in certified labs.', icon: ShieldCheck },
-  { id: 2, title: 'Bulk Supply Available', desc: 'We cater to large-scale requirements for factories and restaurants.', icon: Package },
-  { id: 3, title: 'Competitive Pricing', desc: 'Direct from factory pricing ensuring the best margins for dealers.', icon: TrendingDown },
-  { id: 4, title: 'Fast Distribution', desc: 'Optimized logistics network for timely deliveries across India.', icon: Clock },
-  { id: 5, title: 'Trusted by Retailers', desc: 'Over 5,000+ retail partners trust our brand for daily supply.', icon: ThumbsUp },
-  { id: 6, title: 'COD Available', desc: 'Cash on Delivery options for verified wholesale partners.', icon: BadgePercent },
+gsap.registerPlugin(ScrollTrigger);
+
+const reasons = [
+  { icon: Award, title: 'Industry Certifications', desc: 'FSSAI, AGMARK, ISO 22000 certified across all product lines' },
+  { icon: Leaf, title: 'Pure & Unblended', desc: 'Lab-tested purity. No adulteration. Guaranteed quality standards' },
+  { icon: FlaskConical, title: 'In-House Quality Lab', desc: 'Every batch tested for FFA, moisture, and peroxide values' },
+  { icon: Zap, title: '24hr Express Dispatch', desc: 'Same-day processing with dedicated logistics fleet' },
+  { icon: Headphones, title: 'Dedicated Account Manager', desc: 'Personal business support for wholesale and B2B customers' },
+  { icon: ShieldCheck, title: 'Transparent Pricing', desc: 'No hidden costs. GST-inclusive pricing with volume discounts' },
 ];
 
 const HomeWhyChooseUs = () => {
-  return (
-    <section id="about" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-primary)] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
-            Why Choose Premium Oils?
-          </h2>
-          <div className="h-1 w-20 bg-[var(--color-accent)] mx-auto rounded"></div>
-        </div>
+  const sectionRef = useRef(null);
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {FEATURES.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <motion.div
-                key={feature.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="p-6 rounded-2xl bg-gray-50 hover:bg-[var(--color-primary)] group transition-colors duration-300 border border-gray-100"
-              >
-                <div className="w-12 h-12 rounded-lg bg-[var(--color-accent)]/20 text-[var(--color-accent)] flex items-center justify-center mb-6 group-hover:bg-white/20 group-hover:text-white transition-colors duration-300">
-                  <Icon size={24} />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-white transition-colors duration-300" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 group-hover:text-gray-200 transition-colors duration-300 leading-relaxed">
-                  {feature.desc}
-                </p>
-              </motion.div>
-            );
-          })}
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.why-card',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.5, stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' }
+        }
+      );
+      gsap.fromTo('.why-image',
+        { opacity: 0, scale: 0.96 },
+        {
+          opacity: 1, scale: 1,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' }
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="section-padding bg-[var(--color-surface)]">
+      <div className="section-container">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left: Image */}
+          <div className="why-image relative">
+            <div className="rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="/images/warehouse.png"
+                alt="Our modern oil processing and distribution facility"
+                className="w-full h-80 lg:h-[440px] object-cover"
+              />
+            </div>
+            {/* Floating accent badge */}
+            <div className="absolute -bottom-4 -right-4 bg-white rounded-xl shadow-xl px-5 py-3 flex items-center gap-3 border border-gray-100">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-mid)] flex items-center justify-center">
+                <Award size={20} className="text-[var(--color-accent)]" />
+              </div>
+              <div>
+                <div className="text-sm font-bold text-gray-900">ISO 22000</div>
+                <div className="text-xs text-[var(--color-text-muted)]">Certified Facility</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Content */}
+          <div>
+            <span className="badge-gold mb-4 inline-flex">Why Premium Oils</span>
+            <h2 className="section-title text-[var(--color-primary)] mb-4">
+              Trust Built on Quality
+            </h2>
+            <p className="section-subtitle mb-8">
+              India's most trusted edible oil supply partner — delivering premium quality with enterprise-grade reliability.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {reasons.map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <div key={i} className="why-card group flex gap-3 p-4 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-mid)] flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Icon size={18} className="text-[var(--color-accent)]" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900 text-sm mb-0.5">{item.title}</h3>
+                      <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </section>

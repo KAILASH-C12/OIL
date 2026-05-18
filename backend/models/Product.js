@@ -7,6 +7,10 @@ const ProductSchema = new mongoose.Schema({
         trim: true,
         index: true
     },
+    slug: {
+        type: String,
+        default: ''
+    },
     description: {
         type: String,
         required: [true, 'Please add a description']
@@ -38,6 +42,32 @@ const ProductSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    trending: {
+        type: Boolean,
+        default: false
+    },
+    exportReady: {
+        type: Boolean,
+        default: false
+    },
+    moq: {
+        type: Number,
+        default: 1
+    },
+    tags: [{
+        type: String
+    }],
+    certifications: [{
+        type: String
+    }],
+    nutritionalInfo: {
+        type: String,
+        default: ''
+    },
+    warehouseLocation: {
+        type: String,
+        default: 'Delhi NCR'
+    },
     variants: [{
         size: {
             type: String,
@@ -65,6 +95,10 @@ const ProductSchema = new mongoose.Schema({
         stockQuantity: {
             type: Number,
             default: 0
+        },
+        dispatchTime: {
+            type: String,
+            default: '24-48 hrs'
         }
     }],
     isDeleted: {
@@ -72,5 +106,13 @@ const ProductSchema = new mongoose.Schema({
         default: false
     }
 }, { timestamps: true });
+
+// Auto-generate slug from name if not provided
+ProductSchema.pre('save', function(next) {
+    if (!this.slug && this.name) {
+        this.slug = this.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    }
+    next();
+});
 
 module.exports = mongoose.model('Product', ProductSchema);

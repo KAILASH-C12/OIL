@@ -1,53 +1,84 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Search, ShoppingCart, CreditCard, CheckCircle, Truck } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { Search, ClipboardList, Truck, CheckCircle2 } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const STEPS = [
-  { id: 1, title: 'Browse Products', icon: Search, desc: 'Explore our catalog' },
-  { id: 2, title: 'Add To Cart', icon: ShoppingCart, desc: 'Select variants & qty' },
-  { id: 3, title: 'Place COD Order', icon: CreditCard, desc: 'Secure checkout' },
-  { id: 4, title: 'Order Approval', icon: CheckCircle, desc: 'Verified by admin' },
-  { id: 5, title: 'Fast Delivery', icon: Truck, desc: 'Dispatched & delivered' },
+gsap.registerPlugin(ScrollTrigger);
+
+const steps = [
+  { step: '01', icon: Search, title: 'Browse & Select', desc: 'Explore our catalog of 50+ edible oil products across 12 categories with live pricing.' },
+  { step: '02', icon: ClipboardList, title: 'Request Quote', desc: 'Submit your requirements with quantity, packaging preference, and delivery location for a customized quote.' },
+  { step: '03', icon: Truck, title: 'We Dispatch', desc: 'Orders are processed within 24 hours with real-time tracking from our nearest warehouse.' },
+  { step: '04', icon: CheckCircle2, title: 'Delivered & Verified', desc: 'Receive your order with quality certificates, GST invoice, and damage-free delivery guarantee.' },
 ];
 
 const HomeProcess = () => {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.process-step',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.6, stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' }
+        }
+      );
+      gsap.fromTo('.process-line',
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          duration: 1.2,
+          ease: 'power2.inOut',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' }
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-20 bg-gray-50 border-t border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-primary)] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
-            Simple Ordering Process
+    <section ref={sectionRef} className="section-padding bg-white">
+      <div className="section-container">
+        <div className="text-center mb-14">
+          <span className="badge-emerald mb-4 inline-flex">How It Works</span>
+          <h2 className="section-title text-[var(--color-primary)] mb-4">
+            Simple, Scalable Ordering
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            From browsing to delivery, our streamlined B2B/B2C process ensures you get your supply without any hassle.
+          <p className="section-subtitle mx-auto">
+            From browse to delivery — our streamlined process ensures you get premium oils fast and hassle-free.
           </p>
         </div>
 
         <div className="relative">
-          {/* Connecting Line */}
-          <div className="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gray-200 -translate-y-1/2 z-0"></div>
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 relative z-10">
-            {STEPS.map((step, index) => {
-              const Icon = step.icon;
+          {/* Connection line (desktop) */}
+          <div className="process-line hidden lg:block absolute top-16 left-[12%] right-[12%] h-0.5 origin-left"
+            style={{ background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent), var(--color-primary))' }} />
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {steps.map((item, i) => {
+              const Icon = item.icon;
               return (
-                <motion.div
-                  key={step.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="flex flex-col items-center text-center"
-                >
-                  <div className="w-20 h-20 rounded-full bg-white shadow-lg border-4 border-[var(--color-accent)] flex items-center justify-center text-[var(--color-primary)] mb-6 relative group">
-                    <Icon size={32} className="group-hover:scale-110 transition-transform duration-300" />
-                    <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold border-2 border-white">
-                      {step.id}
+                <div key={i} className="process-step text-center relative">
+                  {/* Step number circle */}
+                  <div className="relative w-20 h-20 mx-auto mb-5">
+                    <div className="w-full h-full rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-mid)] flex items-center justify-center shadow-xl relative z-10">
+                      <Icon size={32} className="text-[var(--color-accent)]" />
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-xs font-extrabold text-white shadow-md z-20">
+                      {item.step}
                     </div>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>{step.title}</h3>
-                  <p className="text-sm text-gray-500">{step.desc}</p>
-                </motion.div>
+                  
+                  <h3 className="font-bold text-gray-900 text-lg mb-2" style={{ fontFamily: 'var(--font-display)' }}>
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-xs mx-auto">
+                    {item.desc}
+                  </p>
+                </div>
               );
             })}
           </div>

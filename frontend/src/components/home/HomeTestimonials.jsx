@@ -1,55 +1,132 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Star, Quote } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const TESTIMONIALS = [
-  { id: 1, name: 'Rajesh Sharma', role: 'Wholesale Dealer, Delhi', text: 'Premium Oils has transformed my distribution business. Their mustard oil is highly requested by my retail clients, and the COD option makes bulk buying risk-free.' },
-  { id: 2, name: 'Anita Desai', role: 'Restaurant Owner, Mumbai', text: 'We use their refined soybean oil for our commercial kitchen. The quality is consistent, delivery is always on time, and the 15L tins are perfectly packed.' },
-  { id: 3, name: 'Vikram Singh', role: 'Supermarket Manager, Pune', text: 'Live pricing helps us buy at the right time. The customer support is excellent and they always ensure our stock never runs empty.' },
+gsap.registerPlugin(ScrollTrigger);
+
+const testimonials = [
+  {
+    name: 'Rajesh Kumar',
+    role: 'Restaurant Chain Owner, Delhi',
+    text: 'Premium Oils has been our sole supplier for 3 years. Consistent quality, on-time delivery, and unbeatable wholesale pricing. Their 15L tins are the gold standard.',
+    rating: 5,
+  },
+  {
+    name: 'Priya Sharma',
+    role: 'Kirana Store Owner, Lucknow',
+    text: 'Best margins in the market. Their delivery is reliable and they offer credit terms that no other distributor provides. My customers love the quality.',
+    rating: 5,
+  },
+  {
+    name: 'Amit Patel',
+    role: 'Food Processing Unit, Ahmedabad',
+    text: 'We order 200L drums monthly. The quality consistency batch-to-batch is remarkable. Their quality certificates and lab reports give us complete confidence.',
+    rating: 5,
+  },
+  {
+    name: 'Sunita Devi',
+    role: 'Catering Business, Jaipur',
+    text: 'Switched from local suppliers to Premium Oils last year. The difference in oil quality is night and day. Express dispatch means we never run out of stock.',
+    rating: 4,
+  },
+  {
+    name: 'Mohammed Farooq',
+    role: 'Wholesale Distributor, Hyderabad',
+    text: 'As a distributor, I need reliable supply and competitive pricing. Premium Oils delivers on both. Their account manager is always responsive.',
+    rating: 5,
+  },
 ];
 
 const HomeTestimonials = () => {
+  const sectionRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const next = () => setActiveIndex((prev) => (prev + 1) % testimonials.length);
+  const prev = () => setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.testimonial-container',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.7,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' }
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
+  // Auto-advance
+  useEffect(() => {
+    const interval = setInterval(next, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const t = testimonials[activeIndex];
+
   return (
-    <section className="py-24 bg-white relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0wIDBoMXY0MEgweiIgZmlsbD0icmdiYSgwLDAsMCwwLjAyKSIvPjxwYXRoIGQ9Ik0wIDBoNDB2MUgweiIgZmlsbD0icmdiYSgwLDAsMCwwLjAyKSIvPjwvc3ZnPg==')] opacity-50 z-0"></div>
+    <section ref={sectionRef} className="section-padding bg-gradient-primary relative overflow-hidden">
+      <div className="absolute inset-0 bg-grid-pattern opacity-20" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-primary)] mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
-            Trusted by Businesses
+      <div className="section-container relative z-10">
+        <div className="text-center mb-12">
+          <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full mb-4 text-sm font-semibold"
+            style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)', color: 'var(--color-accent)' }}>
+            Testimonials
+          </span>
+          <h2 className="section-title text-white mb-4">
+            What Our Partners Say
           </h2>
-          <div className="h-1 w-20 bg-[var(--color-accent)] mx-auto rounded mb-4"></div>
-          <p className="text-gray-600 max-w-2xl mx-auto">See what our B2B partners and retail clients have to say about our products and service.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {TESTIMONIALS.map((testimonial, index) => (
-            <motion.div
-              key={testimonial.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-              className="glass-card p-8 relative mt-8"
-            >
-              <div className="absolute -top-6 left-8 w-12 h-12 bg-[var(--color-accent)] rounded-full flex items-center justify-center text-white shadow-lg border-4 border-white">
-                <Quote size={20} fill="currentColor" />
+        <div className="testimonial-container max-w-3xl mx-auto">
+          <div className="relative p-8 md:p-10 rounded-2xl" 
+            style={{
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              backdropFilter: 'blur(20px)',
+            }}>
+            <Quote size={40} className="text-[var(--color-accent)]/30 absolute top-6 left-6" />
+            
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={18} className={i < t.rating ? 'text-[var(--color-accent)] fill-[var(--color-accent)]' : 'text-gray-600'} />
+                ))}
               </div>
               
-              <div className="flex text-yellow-400 mb-4 mt-4">
-                {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
-              </div>
-              
-              <p className="text-gray-600 mb-6 italic leading-relaxed">
-                "{testimonial.text}"
+              <p className="text-white/90 text-lg md:text-xl leading-relaxed mb-6 italic">
+                "{t.text}"
               </p>
               
-              <div className="border-t pt-4">
-                <h4 className="font-bold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{testimonial.name}</h4>
-                <p className="text-sm text-[var(--color-accent)] font-medium">{testimonial.role}</p>
+              <div>
+                <p className="text-white font-bold text-base">{t.name}</p>
+                <p className="text-gray-400 text-sm">{t.role}</p>
               </div>
-            </motion.div>
-          ))}
+            </div>
+
+            {/* Navigation */}
+            <div className="flex items-center justify-center gap-4 mt-8">
+              <button onClick={prev} className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110"
+                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                <ChevronLeft size={20} className="text-white" />
+              </button>
+              <div className="flex gap-2">
+                {testimonials.map((_, i) => (
+                  <button key={i} onClick={() => setActiveIndex(i)}
+                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === activeIndex ? 'bg-[var(--color-accent)] w-6' : 'bg-white/20 hover:bg-white/40'}`} />
+                ))}
+              </div>
+              <button onClick={next} className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110"
+                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                <ChevronRight size={20} className="text-white" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

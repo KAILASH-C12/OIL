@@ -1,67 +1,64 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
 import { MapPin } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const regions = [
+  { name: 'North India', states: 'Delhi, UP, Haryana, Punjab, Rajasthan, MP', color: 'from-emerald-400 to-green-600' },
+  { name: 'West India', states: 'Maharashtra, Gujarat, Goa, Rajasthan', color: 'from-amber-400 to-orange-600' },
+  { name: 'South India', states: 'Tamil Nadu, Karnataka, Kerala, AP, Telangana', color: 'from-blue-400 to-indigo-600' },
+  { name: 'East India', states: 'West Bengal, Bihar, Odisha, Jharkhand, Assam', color: 'from-purple-400 to-violet-600' },
+  { name: 'Central India', states: 'Madhya Pradesh, Chhattisgarh, Uttarakhand', color: 'from-teal-400 to-cyan-600' },
+  { name: 'Pan-India Tanker', states: 'Industrial tanker supply nationwide', color: 'from-red-400 to-rose-600' },
+];
 
 const HomeDeliveryAreas = () => {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.delivery-card',
+        { opacity: 0, y: 25 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.5, stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' }
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="rounded-2xl overflow-hidden shadow-2xl relative h-96 bg-gray-200"
-          >
-            {/* Using a placeholder gradient/graphic for the map */}
-            <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-amber-50 flex items-center justify-center">
-               <div className="text-center">
-                  <MapPin size={64} className="text-[var(--color-primary)] mx-auto mb-4 opacity-50" />
-                  <p className="text-xl font-bold text-gray-400">Interactive Delivery Map</p>
-               </div>
-            </div>
-            
-            {/* Map points overlay */}
-            <div className="absolute top-1/4 left-1/3 w-4 h-4 bg-[var(--color-accent)] rounded-full animate-ping"></div>
-            <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-[var(--color-primary)] rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
-            <div className="absolute bottom-1/3 right-1/4 w-4 h-4 bg-[var(--color-accent)] rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
-          </motion.div>
+    <section ref={sectionRef} className="section-padding bg-[var(--color-surface)]">
+      <div className="section-container">
+        <div className="text-center mb-14">
+          <span className="badge-gold mb-4 inline-flex">
+            <MapPin size={14} className="mr-1" /> Delivery Network
+          </span>
+          <h2 className="section-title text-[var(--color-primary)] mb-4">
+            Pan-India Distribution Coverage
+          </h2>
+          <p className="section-subtitle mx-auto">
+            Strategic warehouse locations ensure 24-48 hour delivery to 25+ states. Industrial tanker supply available nationwide.
+          </p>
+        </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-primary)] mb-6" style={{ fontFamily: 'Poppins, sans-serif' }}>
-              Serving Retailers & Businesses Across India
-            </h2>
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              Our robust logistics network ensures that whether you are a small retailer in a tier-3 city or a massive warehouse in a metro, your stock reaches you safely and on time.
-            </p>
-            
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-bold text-gray-900 mb-3 border-b pb-2">Primary Zones</h4>
-                <ul className="space-y-2 text-gray-600">
-                  <li>✔ Maharashtra</li>
-                  <li>✔ Gujarat</li>
-                  <li>✔ Delhi NCR</li>
-                  <li>✔ Karnataka</li>
-                </ul>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {regions.map((region, i) => (
+            <div key={i} className="delivery-card premium-card p-5 group flex items-start gap-4">
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${region.color} flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform duration-300`}>
+                <MapPin size={22} className="text-white" />
               </div>
               <div>
-                <h4 className="font-bold text-gray-900 mb-3 border-b pb-2">Expanding Into</h4>
-                <ul className="space-y-2 text-gray-600">
-                  <li>✔ Madhya Pradesh</li>
-                  <li>✔ Rajasthan</li>
-                  <li>✔ Uttar Pradesh</li>
-                  <li>✔ Tamil Nadu</li>
-                </ul>
+                <h3 className="font-bold text-gray-900 mb-1">{region.name}</h3>
+                <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">{region.states}</p>
               </div>
             </div>
-          </motion.div>
-
+          ))}
         </div>
       </div>
     </section>

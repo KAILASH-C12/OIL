@@ -1,84 +1,121 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, MapPin, Phone, Globe, MessageCircle } from 'lucide-react';
+import { Mail, MapPin, Phone, Globe, MessageCircle, ArrowRight } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-gray-300 pt-16 pb-8 border-t-4 border-[var(--color-accent)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+    <footer className="relative overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, #070f0b 0%, #0d1a12 50%, #0a1510 100%)' }}>
+      
+      {/* Top gradient line */}
+      <div className="h-1" style={{ background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent), var(--color-primary))' }} />
+      
+      {/* Background glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[200px] opacity-10"
+        style={{ background: 'radial-gradient(ellipse, rgba(212,175,55,0.3) 0%, transparent 70%)' }} />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-14">
           
           {/* Brand Column */}
           <div>
-            <Link to="/" className="inline-block mb-6">
-              <span className="text-2xl font-extrabold text-white tracking-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                Premium <span className="text-[var(--color-accent)]">Oils</span>
+            <Link to="/" className="inline-block mb-5">
+              <span className="text-2xl font-extrabold tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+                <span className="text-white">Premium</span>
+                <span className="text-[var(--color-accent)]">Oils</span>
               </span>
             </Link>
             <p className="text-sm leading-relaxed mb-6 text-gray-400">
-              India's most trusted edible oil distribution platform. Supplying premium quality mustard, refined, and sunflower oils to retailers, hotels, and businesses nationwide.
+              India's most trusted edible oil distribution platform. Supplying premium quality oils to retailers, hotels, and businesses across 25+ states.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-[var(--color-accent)] hover:text-white transition-colors"><Globe size={18} /></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-[var(--color-accent)] hover:text-white transition-colors"><MessageCircle size={18} /></a>
+            <div className="flex gap-3">
+              <a href="#" className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 transition-all hover:text-white hover:scale-110"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <Globe size={16} />
+              </a>
+              <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 transition-all hover:text-green-400 hover:scale-110"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <MessageCircle size={16} />
+              </a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Quick Links</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/about" className="hover:text-[var(--color-accent)] transition-colors">About Us</Link></li>
-              <li><Link to="/products" className="hover:text-[var(--color-accent)] transition-colors">All Products</Link></li>
-              <li><Link to="/products" className="hover:text-[var(--color-accent)] transition-colors">Categories</Link></li>
-              <li><Link to="/products" className="hover:text-[var(--color-accent)] transition-colors">Wholesale Pricing</Link></li>
-              <li><Link to="/contact" className="hover:text-[var(--color-accent)] transition-colors">Contact Us</Link></li>
+            <h4 className="text-white font-bold mb-5 text-sm uppercase tracking-wider">Quick Links</h4>
+            <ul className="space-y-3">
+              {[
+                { to: '/', label: 'About Us' },
+                { to: '/products', label: 'All Products' },
+                { to: '/products', label: 'Wholesale Pricing' },
+                { to: '/products', label: 'Bulk Orders' },
+                { to: '/#contact', label: 'Contact Us' },
+              ].map((link, i) => (
+                <li key={i}>
+                  <Link to={link.to} className="text-sm text-gray-400 hover:text-[var(--color-accent)] transition-colors flex items-center gap-1 group">
+                    <ArrowRight size={12} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Policies */}
+          {/* Business */}
           <div>
-            <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Policies</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/" className="hover:text-[var(--color-accent)] transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/" className="hover:text-[var(--color-accent)] transition-colors">Terms of Service</Link></li>
-              <li><Link to="/" className="hover:text-[var(--color-accent)] transition-colors">Refund Policy</Link></li>
-              <li><Link to="/" className="hover:text-[var(--color-accent)] transition-colors">Shipping Information</Link></li>
-              <li><Link to="/" className="hover:text-[var(--color-accent)] transition-colors">Distributor Terms</Link></li>
+            <h4 className="text-white font-bold mb-5 text-sm uppercase tracking-wider">For Business</h4>
+            <ul className="space-y-3">
+              {[
+                'Distributor Program',
+                'Franchise Partnership',
+                'Industrial Supply',
+                'Export Enquiry',
+                'Credit Application',
+              ].map((label, i) => (
+                <li key={i}>
+                  <Link to="/products" className="text-sm text-gray-400 hover:text-[var(--color-accent)] transition-colors flex items-center gap-1 group">
+                    <ArrowRight size={12} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Contact Us</h4>
-            <ul className="space-y-4 text-sm">
-              <li className="flex items-start space-x-3">
-                <MapPin size={18} className="text-[var(--color-accent)] flex-shrink-0 mt-1" />
-                <span className="text-gray-400">123 Industrial Area, Phase 2, New Delhi, India 110020</span>
+            <h4 className="text-white font-bold mb-5 text-sm uppercase tracking-wider">Contact Us</h4>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3">
+                <MapPin size={16} className="text-[var(--color-accent)] flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-gray-400">123 Industrial Area, Phase 2, New Delhi, India 110020</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <Phone size={18} className="text-[var(--color-accent)] flex-shrink-0" />
-                <span className="text-gray-400">+91 98765 43210</span>
+              <li className="flex items-center gap-3">
+                <Phone size={16} className="text-[var(--color-accent)] flex-shrink-0" />
+                <span className="text-sm text-gray-400">+91 98765 43210</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <Mail size={18} className="text-[var(--color-accent)] flex-shrink-0" />
-                <span className="text-gray-400">sales@premiumoils.com</span>
+              <li className="flex items-center gap-3">
+                <Mail size={16} className="text-[var(--color-accent)] flex-shrink-0" />
+                <span className="text-sm text-gray-400">sales@premiumoils.com</span>
               </li>
             </ul>
             
-            <div className="mt-6 p-4 bg-gray-800 rounded-lg border border-gray-700">
-               <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">GSTIN</p>
-               <p className="text-sm font-mono text-white">07AABCT1234F1Z5</p>
+            <div className="mt-5 p-3.5 rounded-xl"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">GSTIN</p>
+              <p className="text-sm font-mono text-white/80">07AABCT1234F1Z5</p>
             </div>
           </div>
 
         </div>
 
-        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-          <p>&copy; 2026 Premium Oils. All Rights Reserved.</p>
-          <div className="mt-4 md:mt-0 flex space-x-4">
-             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Rupay-Logo.png/800px-Rupay-Logo.png" alt="RuPay" className="h-6 opacity-50 grayscale hover:grayscale-0" />
-             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/UPI-Logo.png/1200px-UPI-Logo.png" alt="UPI" className="h-6 opacity-50 grayscale hover:grayscale-0" />
+        {/* Bottom bar */}
+        <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-4"
+          style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <p className="text-xs text-gray-500">© 2026 Premium Oils. All Rights Reserved. FSSAI Licensed.</p>
+          <div className="flex items-center gap-4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Rupay-Logo.png/800px-Rupay-Logo.png" alt="RuPay" className="h-5 opacity-30 grayscale hover:grayscale-0 hover:opacity-60 transition-all" />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/UPI-Logo.png/1200px-UPI-Logo.png" alt="UPI" className="h-5 opacity-30 grayscale hover:grayscale-0 hover:opacity-60 transition-all" />
           </div>
         </div>
       </div>

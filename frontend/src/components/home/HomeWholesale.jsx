@@ -1,71 +1,79 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Building2, Store, UtensilsCrossed, Hotel, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { FileText, CreditCard, Repeat, TrendingDown, Truck, ShieldCheck, ArrowRight } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const advantages = [
+  { icon: TrendingDown, title: 'Bulk Pricing', desc: 'Volume-based discounts up to 30% off MRP on all oil categories' },
+  { icon: FileText, title: 'GST Invoicing', desc: 'Proper tax invoices with GSTIN for seamless business accounting' },
+  { icon: CreditCard, title: 'Credit Terms', desc: 'Flexible payment options including 15-30 day credit for verified dealers' },
+  { icon: Repeat, title: 'Auto Reorder', desc: 'Set up recurring orders with locked-in pricing and priority dispatch' },
+  { icon: Truck, title: 'Pan-India Delivery', desc: 'Dedicated logistics to 25+ states with real-time tracking' },
+  { icon: ShieldCheck, title: 'Quality Guarantee', desc: 'FSSAI, AGMARK & ISO 22000 certified products with lab reports' },
+];
 
 const HomeWholesale = () => {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.ws-card',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.5, stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' }
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="wholesale" className="py-24 bg-[var(--color-primary)] relative overflow-hidden text-white">
-      {/* Background Graphic */}
-      <div className="absolute top-0 right-0 w-1/2 h-full opacity-10">
-         <div className="w-[800px] h-[800px] bg-white rounded-full absolute -top-[400px] -right-[400px] blur-3xl"></div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <section ref={sectionRef} className="section-padding bg-gradient-surface relative overflow-hidden">
+      <div className="section-container">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="text-[var(--color-accent)] font-bold tracking-wider uppercase text-sm mb-2 block">Partner With Us</span>
-            <h2 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
-              Become a <span className="text-[var(--color-accent)]">Distributor</span>
+          {/* Left Content */}
+          <div>
+            <span className="badge-gold mb-4 inline-flex">B2B Wholesale</span>
+            <h2 className="section-title text-[var(--color-primary)] mb-4">
+              Built for Business Buyers
             </h2>
-            <p className="text-lg text-gray-300 mb-8 leading-relaxed">
-              We supply premium edible oils to retailers, restaurants, dealers, supermarkets, and hotels at unmatched wholesale prices. Enjoy dedicated support, recurring supply, and faster delivery.
+            <p className="section-subtitle mb-8">
+              Whether you're a shopkeeper, restaurant chain, or industrial processor — our wholesale platform is designed to give you unbeatable pricing, reliable supply, and complete business support.
             </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link to="/products" className="btn-accent flex items-center justify-center gap-2 py-3">
+                Request Wholesale Quote <ArrowRight size={18} />
+              </Link>
+              <Link to="/products" className="btn-primary flex items-center justify-center gap-2 py-3">
+                Become a Distributor
+              </Link>
+            </div>
+          </div>
 
-            <ul className="space-y-4 mb-10">
-              {['Bulk Pricing Discounts', 'Dedicated Account Manager', 'Priority Logistics & Fast Delivery', 'Flexible COD & Credit Options'].map((item, i) => (
-                <li key={i} className="flex items-center text-gray-200">
-                  <div className="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center mr-3">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                  </div>
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            <button className="btn-accent flex items-center justify-center text-lg py-4 px-8 w-full sm:w-auto">
-              Request Wholesale Pricing <ArrowRight className="ml-2" size={20} />
-            </button>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-2 gap-4"
-          >
-            {[
-              { icon: Store, title: 'Retailers' },
-              { icon: UtensilsCrossed, title: 'Restaurants' },
-              { icon: Building2, title: 'Supermarkets' },
-              { icon: Hotel, title: 'Hotels & Caterers' }
-            ].map((box, i) => {
-              const Icon = box.icon;
+          {/* Right Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {advantages.map((item, i) => {
+              const Icon = item.icon;
               return (
-                <div key={i} className="glass-card bg-white/10 border-white/20 p-8 flex flex-col items-center justify-center text-center aspect-square rounded-2xl hover:bg-white/20 transition-all duration-300">
-                  <Icon size={48} className="text-[var(--color-accent)] mb-4" />
-                  <h4 className="font-bold text-lg" style={{ fontFamily: 'Poppins, sans-serif' }}>{box.title}</h4>
+                <div key={i} className="ws-card premium-card p-5 group">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--color-primary)]/5 flex items-center justify-center mb-3 group-hover:bg-[var(--color-accent)]/10 transition-colors duration-300">
+                    <Icon size={20} className="text-[var(--color-primary)] group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 text-sm mb-1">{item.title}</h3>
+                  <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">{item.desc}</p>
                 </div>
               );
             })}
-          </motion.div>
-
+          </div>
         </div>
       </div>
     </section>

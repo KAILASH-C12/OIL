@@ -14,6 +14,7 @@ const AdminProducts = () => {
     variants: []
   };
   const [currentProduct, setCurrentProduct] = useState(initialProductState);
+  const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     fetchProducts();
@@ -95,9 +96,11 @@ const AdminProducts = () => {
           category: product.category._id || product.category // handle populated category
       });
       setIsEditing(true);
+      setImagePreview(product.image?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL.replace('/api/v1', '')}${product.image}` : product.image);
     } else {
       setCurrentProduct(initialProductState);
       setIsEditing(false);
+      setImagePreview(null);
     }
     setIsModalOpen(true);
   };
@@ -241,10 +244,17 @@ const AdminProducts = () => {
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
-                            <select required className="input-field" value={currentProduct.category} onChange={(e) => setCurrentProduct({...currentProduct, category: e.target.value})}>
-                                <option value="">Select Category</option>
-                                {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
-                            </select>
+                            {categories.length === 0 ? (
+                                <div className="p-3 border border-orange-200 bg-orange-50 rounded-lg text-sm">
+                                    <p className="text-orange-700 font-medium">No categories available</p>
+                                    <p className="text-orange-600 text-xs mt-1">Go to <a href="/admin/categories" className="underline font-bold">Category Management</a> to create categories first.</p>
+                                </div>
+                            ) : (
+                                <select required className="input-field" value={currentProduct.category || ''} onChange={(e) => setCurrentProduct({...currentProduct, category: e.target.value})}>
+                                    <option value="">-- Select Category --</option>
+                                    {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+                                </select>
+                            )}
                           </div>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
@@ -277,6 +287,8 @@ const AdminProducts = () => {
                                     const file = e.target.files[0];
                                     if(!file) return;
                                     
+                                    setImagePreview(URL.createObjectURL(file));
+
                                     const formData = new FormData();
                                     formData.append('image', file);
                                     
@@ -298,15 +310,23 @@ const AdminProducts = () => {
                                 }} 
                             />
                           </div>
-                          <div className="col-span-2 md:col-span-1 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-2 bg-gray-50">
-                              {currentProduct.image ? (
-                                  <img 
-                                      src={currentProduct.image.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL.replace('/api/v1', '')}${currentProduct.image}` : currentProduct.image} 
-                                      alt="Preview" 
-                                      className="h-20 object-contain rounded"
-                                  />
+                          <div className="col-span-2 md:col-span-1 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-2 bg-gray-50 overflow-hidden relative group">
+                              {imagePreview || currentProduct.image ? (
+                                  <>
+                                    <img 
+                                        src={imagePreview || (currentProduct.image.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL.replace('/api/v1', '')}${currentProduct.image}` : currentProduct.image)} 
+                                        alt="Preview" 
+                                        className="h-24 w-full object-contain rounded transition-transform duration-300 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded">
+                                        <span className="text-white text-xs font-bold">Image Selected</span>
+                                    </div>
+                                  </>
                               ) : (
-                                  <span className="text-sm text-gray-400">No Image Uploaded</span>
+                                  <div className="text-center">
+                                    <PackageOpen size={32} className="mx-auto text-gray-400 mb-2" />
+                                    <span className="text-sm text-gray-400 block">No Image Uploaded</span>
+                                  </div>
                               )}
                           </div>
                       </div>
