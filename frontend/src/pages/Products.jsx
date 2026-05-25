@@ -28,6 +28,7 @@ const Products = () => {
   const [sortBy, setSortBy] = useState('');
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const sectionRef = useRef(null);
+  const fallbackImage = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='100%' height='100%' fill='%23f3f4f6'/><text x='50%' y='50%' font-size='16' fill='%236b7280' text-anchor='middle' dominant-baseline='middle'>No%20Image</text></svg>";
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -246,7 +247,7 @@ const Products = () => {
 
                   const imageUrl = product.image?.startsWith('/uploads')
                     ? `${import.meta.env.VITE_API_URL.replace('/api/v1', '')}${product.image}`
-                    : (product.image && product.image !== 'no-photo.jpg' ? product.image : null);
+                    : (product.image && product.image !== 'no-photo.jpg' ? product.image : fallbackImage);
 
                   return (
                     <motion.div

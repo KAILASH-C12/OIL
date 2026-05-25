@@ -5,6 +5,7 @@ const AdminLivePrices = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updatingVariantId, setUpdatingVariantId] = useState(null);
+  const fallbackImage = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='100%' height='100%' fill='%23f3f4f6'/><text x='50%' y='50%' font-size='10' fill='%236b7280' text-anchor='middle' dominant-baseline='middle'>No%20Image</text></svg>";
 
   useEffect(() => {
     fetchProducts();
@@ -91,9 +92,9 @@ const AdminLivePrices = () => {
                     <div className="bg-gray-50 px-5 py-4 border-b border-gray-100 flex items-center">
                         <div className="h-10 w-10 bg-white border border-gray-200 rounded p-1 mr-3">
                              <img 
-                                 src={product.image.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL.replace('/api/v1', '')}${product.image}` : product.image} 
-                                 className="w-full h-full object-cover" 
-                                 alt="" 
+                               src={product.image && product.image.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL.replace('/api/v1', '')}${product.image}` : (product.image && product.image !== 'no-photo.jpg' ? product.image : fallbackImage)} 
+                               className="w-full h-full object-cover" 
+                               alt="" 
                              />
                         </div>
                         <div>

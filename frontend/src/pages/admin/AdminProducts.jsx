@@ -16,6 +16,15 @@ const AdminProducts = () => {
   const [currentProduct, setCurrentProduct] = useState(initialProductState);
   const [imagePreview, setImagePreview] = useState(null);
 
+  const parseJsonSafe = async (res) => {
+    const text = await res.text();
+    try {
+      return { data: JSON.parse(text), isJson: true, raw: text };
+    } catch (err) {
+      return { data: null, isJson: false, raw: text };
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
@@ -23,9 +32,17 @@ const AdminProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/products`);
-      const data = await res.json();
-      if (data.success) setProducts(data.data);
+      const token = localStorage.getItem('adminToken');
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/products/admin/all`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const { data, isJson, raw } = await parseJsonSafe(res);
+      if (!res.ok) {
+        const message = isJson ? (data?.message || data?.error || res.statusText) : `Request failed (${res.status})`;
+        console.error('Fetch products failed:', message, raw);
+        return;
+      }
+      if (data?.success) setProducts(data.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -36,8 +53,13 @@ const AdminProducts = () => {
   const fetchCategories = async () => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/categories`);
-      const data = await res.json();
-      if (data.success) setCategories(data.data);
+      const { data, isJson, raw } = await parseJsonSafe(res);
+      if (!res.ok) {
+        const message = isJson ? (data?.message || data?.error || res.statusText) : `Request failed (${res.status})`;
+        console.error('Fetch categories failed:', message, raw);
+        return;
+      }
+      if (data?.success) setCategories(data.data);
     } catch (err) {
       console.error(err);
     }
@@ -45,6 +67,10 @@ const AdminProducts = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    if (!currentProduct.image || currentProduct.image === 'no-photo.jpg') {
+      alert('Please upload a product image.');
+      return;
+    }
     if (currentProduct.variants.length === 0) {
         alert("Please add at least one variant (e.g. 1L, 5L) to this product!");
         return;
@@ -62,12 +88,18 @@ const AdminProducts = () => {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(currentProduct)
       });
-      const data = await res.json();
-      if (data.success) {
+      const { data, isJson, raw } = await parseJsonSafe(res);
+      if (!res.ok) {
+        const message = isJson ? (data?.message || data?.error || res.statusText) : `Request failed (${res.status})`;
+        console.error('Save product failed:', message, raw);
+        alert(message);
+        return;
+      }
+      if (data?.success) {
         setIsModalOpen(false);
         fetchProducts();
       } else {
-        alert(data.message);
+        alert(data?.message || 'Failed to save product');
       }
     } catch (err) {
       console.error(err);
@@ -96,7 +128,7 @@ const AdminProducts = () => {
           category: product.category._id || product.category // handle populated category
       });
       setIsEditing(true);
-      setImagePreview(product.image?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL.replace('/api/v1', '')}${product.image}` : product.image);
+      setImagePreview(product.image && product.image.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL.replace('/api/v1', '')}${product.image}` : product.image);
     } else {
       setCurrentProduct(initialProductState);
       setIsEditing(false);
@@ -158,7 +190,7 @@ const AdminProducts = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="h-12 w-12 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                            {product.image === 'no-photo.jpg' ? (
+                            {!product.image || product.image === 'no-photo.jpg' ? (
                                 <PackageOpen className="w-full h-full p-2 text-gray-400" />
                             ) : (
                                 <img 
@@ -311,10 +343,10 @@ const AdminProducts = () => {
                             />
                           </div>
                           <div className="col-span-2 md:col-span-1 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-2 bg-gray-50 overflow-hidden relative group">
-                              {imagePreview || currentProduct.image ? (
+                                {imagePreview || currentProduct.image ? (
                                   <>
                                     <img 
-                                        src={imagePreview || (currentProduct.image.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL.replace('/api/v1', '')}${currentProduct.image}` : currentProduct.image)} 
+                                    src={imagePreview || (currentProduct.image && currentProduct.image.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL.replace('/api/v1', '')}${currentProduct.image}` : currentProduct.image)} 
                                         alt="Preview" 
                                         className="h-24 w-full object-contain rounded transition-transform duration-300 group-hover:scale-105"
                                     />

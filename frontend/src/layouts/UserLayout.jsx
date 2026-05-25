@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   User, 
@@ -9,7 +9,8 @@ import {
   ShoppingCart,
   LogOut,
   Menu,
-  X
+  X,
+  Home
 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { clearCart } from '../redux/slices/cartSlice';
@@ -53,9 +54,14 @@ const UserLayout = () => {
         flex flex-col
       `}>
         <div className="h-20 flex items-center justify-between px-6 border-b border-gray-100">
-          <span className="text-xl font-extrabold text-[var(--color-primary)]" style={{ fontFamily: 'Poppins, sans-serif' }}>
-            My <span className="text-[var(--color-accent)]">Account</span>
-          </span>
+          <div className="flex items-center gap-3">
+            <Link to="/" className="w-10 h-10 rounded-xl bg-[var(--color-primary)] flex items-center justify-center hover:bg-[var(--color-accent)] transition-colors duration-200 shadow-md" title="Go to Home Page">
+              <Home size={20} className="text-white" />
+            </Link>
+            <span className="text-xl font-extrabold text-[var(--color-primary)]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              My <span className="text-[var(--color-accent)]">Account</span>
+            </span>
+          </div>
           <button className="lg:hidden text-gray-500" onClick={() => setSidebarOpen(false)}>
             <X size={24} />
           </button>
