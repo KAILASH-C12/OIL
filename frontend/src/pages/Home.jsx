@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import WhatsAppButton from '../components/WhatsAppButton';
+import NoupeChatbot from '../components/NoupeChatbot';
 
 // Import Home Sections
 import HomeHero from '../components/home/HomeHero';
@@ -21,7 +21,7 @@ const Home = () => {
         <meta name="keywords" content="edible oil wholesale, mustard oil distributor, bulk cooking oil, B2B oil supply, premium oils India, wholesale oil supplier" />
       </Helmet>
       
-      <WhatsAppButton />
+      <NoupeChatbot />
 
       {/* 1. Cinematic Full-Screen Hero */}
       <HomeHero />
